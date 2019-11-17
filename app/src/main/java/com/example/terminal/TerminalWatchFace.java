@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
+import android.support.wearable.complications.ComplicationText;
 import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -90,8 +92,9 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private boolean mRegisteredTimeZoneReceiver = false;
 
         // RELEVANT =======================================
-        private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a z");
-        private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd EEE");
+        private SimpleDateFormat mTimeFormat = new SimpleDateFormat("hh:mm:ss a z", Locale.getDefault());
+        private SimpleDateFormat mTimeAmbientFormat = new SimpleDateFormat("hh:mm:'??' a z", Locale.getDefault());
+        private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
 
         private static final float TEXT_SIZE_RATIO = 0.0622f;
         private static final float TEXT_X_RATIO = 0.1f;
@@ -188,18 +191,27 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                         sb.append(i < length ? "#" : ".");
                     }
                     sb.append("] ");
-                    sb.append(String.format("%02d", percent));
+                    sb.append(String.format(Locale.getDefault(), "%02d", percent));
                     sb.append("%");
                     mBatteryVisual = sb.toString();
                     break;
                 case STEP_COMP_ID:
-                    mStepString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
+                    mStepString = getShortText(complicationData);
                     break;
                 case NOTIF_COMP_ID:
-                    mNotifString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
+                    mNotifString = getShortText(complicationData);
                     break;
             }
             invalidate();
+        }
+
+        private String getShortText(ComplicationData data) {
+            // It is truly ridiculous the effort you have to go through just to get the goddamn string out of this thing
+            ComplicationText text = data.getShortText();
+            if (text == null) {
+                return "NO_INFO";
+            }
+            return text.getText(getApplicationContext(), System.currentTimeMillis()).toString();
         }
 
         @Override
@@ -297,10 +309,11 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 canvas.drawText(message, mTextX, y, mTextPaint);
                 switch (i) {
                     case 1:
+                        SimpleDateFormat timeFormat = mAmbient ? mTimeAmbientFormat : mTimeFormat;
                         canvas.drawText(timeFormat.format(dtm), mExtraTextX, y, mTimePaint);
                         break;
                     case 2:
-                        canvas.drawText(dateFormat.format(dtm), mExtraTextX, y, mDatePaint);
+                        canvas.drawText(mDateFormat.format(dtm), mExtraTextX, y, mDatePaint);
                         break;
                     case 3:
                         canvas.drawText(mBatteryVisual, mExtraTextX, y, mBatteryPaint);
