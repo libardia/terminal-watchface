@@ -122,7 +122,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private float mCenterY;
         private String mBatteryVisual = "NO_INFO";
         private String mStepString = "NO_INFO";
-        private String mNotifString = "NO_INFO";
+        private String mNotificationString = "NO_INFO";
         // ================================================
 
 
@@ -174,7 +174,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                     mStepString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
                     break;
                 case NOTIF_COMP_ID:
-                    mNotifString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
+                    mNotificationString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
                     break;
             }
             invalidate();
@@ -239,13 +239,13 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
 
             // Set up text and calculate position values
             messages = new ArrayList<>();
-            messages.add("user@watch:~ $ now");
+            messages.add("tonyl@watch:~ $ now");
             messages.add("[TIME] ");
             messages.add("[DATE] ");
             messages.add("[BATT] ");
             messages.add("[STEP] ");
             messages.add("[NTIF] ");
-            messages.add("user@watch:~ $");
+            messages.add("tonyl@watch:~ $");
 
             float totalTextHeight = (messages.size() - 1) * mTextPaint.getFontSpacing();
             mTextX = mCenterX - mTextPaint.measureText(messages.get(0)) / 2;
@@ -287,7 +287,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                         canvas.drawText(mStepString, mExtraTextX, y, mStepPaint);
                         break;
                     case 5:
-                        canvas.drawText(mNotifString, mExtraTextX, y, mNotifPaint);
+                        canvas.drawText(mNotificationString, mExtraTextX, y, mNotifPaint);
                         break;
                 }
                 y += mTextPaint.getFontSpacing();
