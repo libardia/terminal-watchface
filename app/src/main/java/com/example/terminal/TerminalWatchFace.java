@@ -107,6 +107,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private static final int BATTERY_COLOR = Color.MAGENTA;
         private static final int STEP_COLOR = Color.RED;
         private static final int NOTIF_COLOR = Color.YELLOW;
+        private static final int AMBIENT_COLOR = Color.GRAY;
 
         private boolean mAmbient;
         private TextPaint mTextPaint;
@@ -123,7 +124,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private float mCenterY;
         private String mBatteryVisual = "NO_INFO";
         private String mStepString = "NO_INFO";
-        private String mNotificationString = "NO_INFO";
+        private String mNotifString = "NO_INFO";
         // ================================================
 
         @Override
@@ -153,6 +154,23 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
             mAmbient = inAmbientMode;
+
+            if (mAmbient) {
+                mTextPaint.setColor(AMBIENT_COLOR);
+                mTimePaint.setColor(AMBIENT_COLOR);
+                mDatePaint.setColor(AMBIENT_COLOR);
+                mBatteryPaint.setColor(AMBIENT_COLOR);
+                mStepPaint.setColor(AMBIENT_COLOR);
+                mNotifPaint.setColor(AMBIENT_COLOR);
+            } else {
+                mTextPaint.setColor(BASE_TEXT_COLOR);
+                mTimePaint.setColor(TIME_COLOR);
+                mDatePaint.setColor(DATE_COLOR);
+                mBatteryPaint.setColor(BATTERY_COLOR);
+                mStepPaint.setColor(STEP_COLOR);
+                mNotifPaint.setColor(NOTIF_COLOR);
+            }
+
             updateTimer();
         }
 
@@ -178,7 +196,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                     mStepString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
                     break;
                 case NOTIF_COMP_ID:
-                    mNotificationString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
+                    mNotifString = complicationData.getShortText().getText(getApplicationContext(), System.currentTimeMillis()).toString();
                     break;
             }
             invalidate();
@@ -291,7 +309,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                         canvas.drawText(mStepString, mExtraTextX, y, mStepPaint);
                         break;
                     case 5:
-                        canvas.drawText(mNotificationString, mExtraTextX, y, mNotifPaint);
+                        canvas.drawText(mNotifString, mExtraTextX, y, mNotifPaint);
                         break;
                 }
                 y += mTextPaint.getFontSpacing();
