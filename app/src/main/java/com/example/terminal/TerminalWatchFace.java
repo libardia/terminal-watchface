@@ -14,6 +14,7 @@ import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.watchface.CanvasWatchFaceService;
+import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.TextPaint;
 import android.view.SurfaceHolder;
 
@@ -98,7 +99,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private static final int BATTERY_COMP_ID = 0;
         private static final int STEP_COMP_ID = 1;
         private static final int NOTIF_COMP_ID = 2;
-        private final int[] COMP_IDS = { BATTERY_COMP_ID, STEP_COMP_ID, NOTIF_COMP_ID };
+        private final int[] COMP_IDS = {BATTERY_COMP_ID, STEP_COMP_ID, NOTIF_COMP_ID};
 
         private static final int BASE_TEXT_COLOR = Color.WHITE;
         private static final int TIME_COLOR = Color.GREEN;
@@ -125,12 +126,15 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private String mNotificationString = "NO_INFO";
         // ================================================
 
-
         @Override
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
             mCalendar = Calendar.getInstance();
             setActiveComplications(COMP_IDS);
+
+            setWatchFaceStyle(new WatchFaceStyle.Builder(TerminalWatchFace.this)
+                    .setHideNotificationIndicator(true)
+                    .build());
         }
 
         @Override
@@ -162,7 +166,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                     int length = Math.round(battery * 10);
                     int percent = Math.round(battery * 100);
                     StringBuilder sb = new StringBuilder("[");
-                    for (int i=0; i < 10; i++) {
+                    for (int i = 0; i < 10; i++) {
                         sb.append(i < length ? "#" : ".");
                     }
                     sb.append("] ");
@@ -196,7 +200,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mTextPaint.setColor(BASE_TEXT_COLOR);
             mTextPaint.setAntiAlias(true);
             mTextPaint.setTextAlign(Paint.Align.LEFT);
-            
+
             mTimePaint = new TextPaint();
             mTimePaint.setTypeface(Typeface.MONOSPACE);
             mTimePaint.setFakeBoldText(true);
@@ -204,7 +208,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mTimePaint.setColor(TIME_COLOR);
             mTimePaint.setAntiAlias(true);
             mTimePaint.setTextAlign(Paint.Align.LEFT);
-            
+
             mDatePaint = new TextPaint();
             mDatePaint.setTypeface(Typeface.MONOSPACE);
             mDatePaint.setFakeBoldText(true);
@@ -212,7 +216,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mDatePaint.setColor(DATE_COLOR);
             mDatePaint.setAntiAlias(true);
             mDatePaint.setTextAlign(Paint.Align.LEFT);
-            
+
             mBatteryPaint = new TextPaint();
             mBatteryPaint.setTypeface(Typeface.MONOSPACE);
             mBatteryPaint.setFakeBoldText(true);
@@ -220,7 +224,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mBatteryPaint.setColor(BATTERY_COLOR);
             mBatteryPaint.setAntiAlias(true);
             mBatteryPaint.setTextAlign(Paint.Align.LEFT);
-            
+
             mStepPaint = new TextPaint();
             mStepPaint.setTypeface(Typeface.MONOSPACE);
             mStepPaint.setFakeBoldText(true);
@@ -228,7 +232,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mStepPaint.setColor(STEP_COLOR);
             mStepPaint.setAntiAlias(true);
             mStepPaint.setTextAlign(Paint.Align.LEFT);
-            
+
             mNotifPaint = new TextPaint();
             mNotifPaint.setTypeface(Typeface.MONOSPACE);
             mNotifPaint.setFakeBoldText(true);
