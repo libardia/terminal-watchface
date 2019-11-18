@@ -93,7 +93,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
 
         // RELEVANT =======================================
         private SimpleDateFormat mTimeFormat = new SimpleDateFormat("hh:mm:ss a z", Locale.getDefault());
-        private SimpleDateFormat mTimeAmbientFormat = new SimpleDateFormat("hh:mm:'??' a z", Locale.getDefault());
+        private SimpleDateFormat mTimeAmbientFormat = new SimpleDateFormat("hh:mm:-- a z", Locale.getDefault());
         private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
 
         private static final float TEXT_SIZE_RATIO = 0.0622f;
