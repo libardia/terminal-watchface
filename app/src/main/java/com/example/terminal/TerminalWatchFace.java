@@ -212,8 +212,6 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             invalidate();
         }
 
-
-        
         private String getShortText(ComplicationData data) {
             // It is truly ridiculous the effort you have to go through just to get the goddamn string out of this thing
             ComplicationText text = data.getShortText();
