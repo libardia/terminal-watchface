@@ -172,13 +172,11 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             if (mAmbient) {
                 mTimeFormat = mTimeAmbientFormat;
                 for (TextPaint p : mTextPaints) {
-                    p.setAntiAlias(false);
                     p.setColor(AMBIENT_COLOR);
                 }
             } else {
                 mTimeFormat = mTimeInteractiveFormat;
                 for (int i = 0; i < NUM_PAINTS; i++) {
-                    mTextPaints[i].setAntiAlias(true);
                     mTextPaints[i].setColor(PAINT_COLORS[i]);
                 }
             }
@@ -231,12 +229,13 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mCenterX = width / 2f;
             mCenterY = height / 2f;
 
-            Typeface font = ResourcesCompat.getFont(getApplicationContext(), R.font.consola);
+            // Init time format
+            mTimeFormat = mTimeInteractiveFormat;
 
             // Init paint objects
             for (int i = 0; i < NUM_PAINTS; i++) {
                 TextPaint p = new TextPaint();
-                p.setTypeface(font);
+                p.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.consola));
                 p.setFakeBoldText(true);
                 p.setTextSize(height * TEXT_SIZE_RATIO);
                 p.setAntiAlias(true);
