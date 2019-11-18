@@ -94,7 +94,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private boolean mRegisteredTimeZoneReceiver = false;
 
         // RELEVANT =======================================
-        private SimpleDateFormat mTimeFormat = new SimpleDateFormat("hh:mm:ss a z", Locale.getDefault());
+        private SimpleDateFormat mTimeFormat;
+        private SimpleDateFormat mTimeInteractiveFormat = new SimpleDateFormat("hh:mm:ss a z", Locale.getDefault());
         private SimpleDateFormat mTimeAmbientFormat = new SimpleDateFormat("hh:mm:-- a z", Locale.getDefault());
         private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
 
@@ -112,15 +113,20 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private static final int BATTERY_COLOR = Color.MAGENTA;
         private static final int STEP_COLOR = Color.RED;
         private static final int NOTIF_COLOR = Color.YELLOW;
+        private int[] PAINT_COLORS = {BASE_TEXT_COLOR, TIME_COLOR, DATE_COLOR, BATTERY_COLOR, STEP_COLOR, NOTIF_COLOR};
+
         private static final int AMBIENT_COLOR = Color.GRAY;
 
         private boolean mAmbient;
-        private TextPaint mTextPaint;
-        private TextPaint mTimePaint;
-        private TextPaint mDatePaint;
-        private TextPaint mBatteryPaint;
-        private TextPaint mStepPaint;
-        private TextPaint mNotifPaint;
+        private TextPaint[] mTextPaints;
+        private static final int NUM_PAINTS = 6;
+        private static final int BASE_PAINT = 0;
+        private static final int TIME_PAINT = 1;
+        private static final int DATE_PAINT = 2;
+        private static final int BATTERY_PAINT = 3;
+        private static final int STEP_PAINT = 4;
+        private static final int NOTIF_PAINT = 5;
+
         private List<String> messages;
         private float mTextX;
         private float mExtraTextX;
@@ -135,7 +141,10 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         @Override
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
+
             mCalendar = Calendar.getInstance();
+            mTextPaints = new TextPaint[NUM_PAINTS];
+
             setActiveComplications(COMP_IDS);
 
             setWatchFaceStyle(new WatchFaceStyle.Builder(TerminalWatchFace.this)
@@ -161,19 +170,17 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mAmbient = inAmbientMode;
 
             if (mAmbient) {
-                mTextPaint.setColor(AMBIENT_COLOR);
-                mTimePaint.setColor(AMBIENT_COLOR);
-                mDatePaint.setColor(AMBIENT_COLOR);
-                mBatteryPaint.setColor(AMBIENT_COLOR);
-                mStepPaint.setColor(AMBIENT_COLOR);
-                mNotifPaint.setColor(AMBIENT_COLOR);
+                mTimeFormat = mTimeAmbientFormat;
+                for (TextPaint p : mTextPaints) {
+                    p.setAntiAlias(false);
+                    p.setColor(AMBIENT_COLOR);
+                }
             } else {
-                mTextPaint.setColor(BASE_TEXT_COLOR);
-                mTimePaint.setColor(TIME_COLOR);
-                mDatePaint.setColor(DATE_COLOR);
-                mBatteryPaint.setColor(BATTERY_COLOR);
-                mStepPaint.setColor(STEP_COLOR);
-                mNotifPaint.setColor(NOTIF_COLOR);
+                mTimeFormat = mTimeInteractiveFormat;
+                for (int i = 0; i < NUM_PAINTS; i++) {
+                    mTextPaints[i].setAntiAlias(true);
+                    mTextPaints[i].setColor(PAINT_COLORS[i]);
+                }
             }
 
             updateTimer();
@@ -227,53 +234,17 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             Typeface font = ResourcesCompat.getFont(getApplicationContext(), R.font.consola);
 
             // Init paint objects
-            mTextPaint = new TextPaint();
-            mTextPaint.setTypeface(font);
-            mTextPaint.setFakeBoldText(true);
-            mTextPaint.setTextSize(height * TEXT_SIZE_RATIO);
-            mTextPaint.setColor(BASE_TEXT_COLOR);
-            mTextPaint.setAntiAlias(true);
-            mTextPaint.setTextAlign(Paint.Align.LEFT);
+            for (int i = 0; i < NUM_PAINTS; i++) {
+                TextPaint p = new TextPaint();
+                p.setTypeface(font);
+                p.setFakeBoldText(true);
+                p.setTextSize(height * TEXT_SIZE_RATIO);
+                p.setAntiAlias(true);
+                p.setTextAlign(Paint.Align.LEFT);
+                p.setColor(PAINT_COLORS[i]);
 
-            mTimePaint = new TextPaint();
-            mTimePaint.setTypeface(font);
-            mTimePaint.setFakeBoldText(true);
-            mTimePaint.setTextSize(height * TEXT_SIZE_RATIO);
-            mTimePaint.setColor(TIME_COLOR);
-            mTimePaint.setAntiAlias(true);
-            mTimePaint.setTextAlign(Paint.Align.LEFT);
-
-            mDatePaint = new TextPaint();
-            mDatePaint.setTypeface(font);
-            mDatePaint.setFakeBoldText(true);
-            mDatePaint.setTextSize(height * TEXT_SIZE_RATIO);
-            mDatePaint.setColor(DATE_COLOR);
-            mDatePaint.setAntiAlias(true);
-            mDatePaint.setTextAlign(Paint.Align.LEFT);
-
-            mBatteryPaint = new TextPaint();
-            mBatteryPaint.setTypeface(font);
-            mBatteryPaint.setFakeBoldText(true);
-            mBatteryPaint.setTextSize(height * TEXT_SIZE_RATIO);
-            mBatteryPaint.setColor(BATTERY_COLOR);
-            mBatteryPaint.setAntiAlias(true);
-            mBatteryPaint.setTextAlign(Paint.Align.LEFT);
-
-            mStepPaint = new TextPaint();
-            mStepPaint.setTypeface(font);
-            mStepPaint.setFakeBoldText(true);
-            mStepPaint.setTextSize(height * TEXT_SIZE_RATIO);
-            mStepPaint.setColor(STEP_COLOR);
-            mStepPaint.setAntiAlias(true);
-            mStepPaint.setTextAlign(Paint.Align.LEFT);
-
-            mNotifPaint = new TextPaint();
-            mNotifPaint.setTypeface(font);
-            mNotifPaint.setFakeBoldText(true);
-            mNotifPaint.setTextSize(height * TEXT_SIZE_RATIO);
-            mNotifPaint.setColor(NOTIF_COLOR);
-            mNotifPaint.setAntiAlias(true);
-            mNotifPaint.setTextAlign(Paint.Align.LEFT);
+                mTextPaints[i] = p;
+            }
 
             // Set up text and calculate position values
             messages = new ArrayList<>();
@@ -285,10 +256,10 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             messages.add("[NTIF] ");
             messages.add("tonyl@watch:~ $");
 
-            float totalTextHeight = (messages.size() - 1) * mTextPaint.getFontSpacing();
-            mTextX = mCenterX - mTextPaint.measureText(messages.get(0)) / 2;
+            float totalTextHeight = (messages.size() - 1) * mTextPaints[BASE_PAINT].getFontSpacing();
+            mTextX = mCenterX - mTextPaints[BASE_PAINT].measureText(messages.get(0)) / 2;
             mTextX = width * TEXT_X_RATIO;
-            mExtraTextX = mTextX + mTextPaint.measureText(messages.get(1));
+            mExtraTextX = mTextX + mTextPaints[BASE_PAINT].measureText(messages.get(1));
             mTextY = mCenterY - totalTextHeight / 2;
 
             // Init complications
@@ -310,26 +281,25 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             float y = mTextY;
             for (int i = 0; i < messages.size(); i++) {
                 String message = messages.get(i);
-                canvas.drawText(message, mTextX, y, mTextPaint);
+                canvas.drawText(message, mTextX, y, mTextPaints[BASE_PAINT]);
                 switch (i) {
                     case 1:
-                        SimpleDateFormat timeFormat = mAmbient ? mTimeAmbientFormat : mTimeFormat;
-                        canvas.drawText(timeFormat.format(dtm), mExtraTextX, y, mTimePaint);
+                        canvas.drawText(mTimeFormat.format(dtm), mExtraTextX, y, mTextPaints[TIME_PAINT]);
                         break;
                     case 2:
-                        canvas.drawText(mDateFormat.format(dtm), mExtraTextX, y, mDatePaint);
+                        canvas.drawText(mDateFormat.format(dtm), mExtraTextX, y, mTextPaints[DATE_PAINT]);
                         break;
                     case 3:
-                        canvas.drawText(mBatteryVisual, mExtraTextX, y, mBatteryPaint);
+                        canvas.drawText(mBatteryVisual, mExtraTextX, y, mTextPaints[BATTERY_PAINT]);
                         break;
                     case 4:
-                        canvas.drawText(mStepString, mExtraTextX, y, mStepPaint);
+                        canvas.drawText(mStepString, mExtraTextX, y, mTextPaints[STEP_PAINT]);
                         break;
                     case 5:
-                        canvas.drawText(mNotifString, mExtraTextX, y, mNotifPaint);
+                        canvas.drawText(mNotifString, mExtraTextX, y, mTextPaints[NOTIF_PAINT]);
                         break;
                 }
-                y += mTextPaint.getFontSpacing();
+                y += mTextPaints[BASE_PAINT].getFontSpacing();
             }
         }
 
