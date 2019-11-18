@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import androidx.core.content.res.ResourcesCompat;
+
 /**
  * Analog watch face with a ticking second hand. In ambient mode, the second hand isn't
  * shown. On devices with low-bit ambient mode, the hands are drawn without anti-aliasing in ambient
@@ -96,7 +98,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private SimpleDateFormat mTimeAmbientFormat = new SimpleDateFormat("hh:mm:-- a z", Locale.getDefault());
         private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
 
-        private static final float TEXT_SIZE_RATIO = 0.0622f;
+        private static final float TEXT_SIZE_RATIO = 0.065f;
         private static final float TEXT_X_RATIO = 0.1f;
 
         private static final int BATTERY_COMP_ID = 0;
@@ -222,9 +224,11 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mCenterX = width / 2f;
             mCenterY = height / 2f;
 
+            Typeface font = ResourcesCompat.getFont(getApplicationContext(), R.font.consola);
+
             // Init paint objects
             mTextPaint = new TextPaint();
-            mTextPaint.setTypeface(Typeface.MONOSPACE);
+            mTextPaint.setTypeface(font);
             mTextPaint.setFakeBoldText(true);
             mTextPaint.setTextSize(height * TEXT_SIZE_RATIO);
             mTextPaint.setColor(BASE_TEXT_COLOR);
@@ -232,7 +236,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mTextPaint.setTextAlign(Paint.Align.LEFT);
 
             mTimePaint = new TextPaint();
-            mTimePaint.setTypeface(Typeface.MONOSPACE);
+            mTimePaint.setTypeface(font);
             mTimePaint.setFakeBoldText(true);
             mTimePaint.setTextSize(height * TEXT_SIZE_RATIO);
             mTimePaint.setColor(TIME_COLOR);
@@ -240,7 +244,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mTimePaint.setTextAlign(Paint.Align.LEFT);
 
             mDatePaint = new TextPaint();
-            mDatePaint.setTypeface(Typeface.MONOSPACE);
+            mDatePaint.setTypeface(font);
             mDatePaint.setFakeBoldText(true);
             mDatePaint.setTextSize(height * TEXT_SIZE_RATIO);
             mDatePaint.setColor(DATE_COLOR);
@@ -248,7 +252,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mDatePaint.setTextAlign(Paint.Align.LEFT);
 
             mBatteryPaint = new TextPaint();
-            mBatteryPaint.setTypeface(Typeface.MONOSPACE);
+            mBatteryPaint.setTypeface(font);
             mBatteryPaint.setFakeBoldText(true);
             mBatteryPaint.setTextSize(height * TEXT_SIZE_RATIO);
             mBatteryPaint.setColor(BATTERY_COLOR);
@@ -256,7 +260,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mBatteryPaint.setTextAlign(Paint.Align.LEFT);
 
             mStepPaint = new TextPaint();
-            mStepPaint.setTypeface(Typeface.MONOSPACE);
+            mStepPaint.setTypeface(font);
             mStepPaint.setFakeBoldText(true);
             mStepPaint.setTextSize(height * TEXT_SIZE_RATIO);
             mStepPaint.setColor(STEP_COLOR);
@@ -264,7 +268,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mStepPaint.setTextAlign(Paint.Align.LEFT);
 
             mNotifPaint = new TextPaint();
-            mNotifPaint.setTypeface(Typeface.MONOSPACE);
+            mNotifPaint.setTypeface(font);
             mNotifPaint.setFakeBoldText(true);
             mNotifPaint.setTextSize(height * TEXT_SIZE_RATIO);
             mNotifPaint.setColor(NOTIF_COLOR);
