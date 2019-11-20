@@ -1,4 +1,4 @@
-package com.example.terminal;
+package info.tonyl.terminal;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
@@ -19,6 +18,8 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.TextPaint;
 import android.view.SurfaceHolder;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,8 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-
-import androidx.core.content.res.ResourcesCompat;
 
 /**
  * Analog watch face with a ticking second hand. In ambient mode, the second hand isn't
@@ -62,7 +61,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
     }
 
     private static class EngineHandler extends Handler {
-        private final WeakReference<TerminalWatchFace.Engine> mWeakReference;
+        private final WeakReference<Engine> mWeakReference;
 
         public EngineHandler(TerminalWatchFace.Engine reference) {
             mWeakReference = new WeakReference<>(reference);
