@@ -316,11 +316,15 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
 
             mSb.append(mHourMinuteString);
 
-            String sec = Integer.toString(c.get(Calendar.SECOND));
-            if (sec.length() < 2) {
-                mSb.append("0");
+            if (!mAmbient) {
+                String sec = Integer.toString(c.get(Calendar.SECOND));
+                if (sec.length() < 2) {
+                    mSb.append("0");
+                }
+                mSb.append(sec);
+            } else {
+                mSb.append("--");
             }
-            mSb.append(sec);
 
             mSb.append(mAmTimezoneString);
 
