@@ -94,10 +94,10 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private boolean mRegisteredTimeZoneReceiver = false;
 
         // RELEVANT =======================================
-        private SimpleDateFormat mTimeFormat;
-        private SimpleDateFormat mTimeInteractiveFormat = new SimpleDateFormat("hh:mm:ss a z", Locale.getDefault());
-        private SimpleDateFormat mTimeAmbientFormat = new SimpleDateFormat("hh:mm:-- a z", Locale.getDefault());
+        private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat("hh:mm:", Locale.getDefault());
+        private SimpleDateFormat mAmTimezoneFormat = new SimpleDateFormat(" a z", Locale.getDefault());
         private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
+
 
         private static final float TEXT_SIZE_RATIO = 0.065f;
         private static final float TEXT_X_RATIO = 0.1f;
@@ -136,6 +136,14 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private String mBatteryVisual = "NO_INFO";
         private String mStepString = "NO_INFO";
         private String mNotifString = "NO_INFO";
+
+        private int mMinute;
+        private String mHourMinuteString;
+        private String mAmTimezoneString;
+        private StringBuilder mSb = new StringBuilder();
+
+        private int mDay;
+        private String mDateString;
         // ================================================
 
         @Override
@@ -170,12 +178,10 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mAmbient = inAmbientMode;
 
             if (mAmbient) {
-                mTimeFormat = mTimeAmbientFormat;
                 for (TextPaint p : mTextPaints) {
                     p.setColor(AMBIENT_COLOR);
                 }
             } else {
-                mTimeFormat = mTimeInteractiveFormat;
                 for (int i = 0; i < NUM_PAINTS; i++) {
                     mTextPaints[i].setColor(PAINT_COLORS[i]);
                 }
@@ -229,9 +235,6 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mCenterX = width / 2f;
             mCenterY = height / 2f;
 
-            // Init time format
-            mTimeFormat = mTimeInteractiveFormat;
-
             // Init paint objects
             for (int i = 0; i < NUM_PAINTS; i++) {
                 TextPaint p = new TextPaint();
@@ -276,17 +279,16 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             canvas.drawColor(Color.BLACK);
 
             // Draw text
-            Date dtm = mCalendar.getTime();
             float y = mTextY;
             for (int i = 0; i < messages.size(); i++) {
                 String message = messages.get(i);
                 canvas.drawText(message, mTextX, y, mTextPaints[BASE_PAINT]);
                 switch (i) {
                     case 1:
-                        canvas.drawText(mTimeFormat.format(dtm), mExtraTextX, y, mTextPaints[TIME_PAINT]);
+                        canvas.drawText(makeTime(mCalendar), mExtraTextX, y, mTextPaints[TIME_PAINT]);
                         break;
                     case 2:
-                        canvas.drawText(mDateFormat.format(dtm), mExtraTextX, y, mTextPaints[DATE_PAINT]);
+                        canvas.drawText(makeDate(mCalendar), mExtraTextX, y, mTextPaints[DATE_PAINT]);
                         break;
                     case 3:
                         canvas.drawText(mBatteryVisual, mExtraTextX, y, mTextPaints[BATTERY_PAINT]);
@@ -300,6 +302,39 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 }
                 y += mTextPaints[BASE_PAINT].getFontSpacing();
             }
+        }
+
+        private String makeTime(Calendar c) {
+            mSb.setLength(0);
+            Date d = c.getTime();
+            int minute = c.get(Calendar.MINUTE);
+            if (minute != mMinute) {
+                mMinute = minute;
+                mHourMinuteString = mHourMinuteFormat.format(d);
+                mAmTimezoneString = mAmTimezoneFormat.format(d);
+            }
+
+            mSb.append(mHourMinuteString);
+
+            String sec = Integer.toString(c.get(Calendar.SECOND));
+            if (sec.length() < 2) {
+                mSb.append("0");
+            }
+            mSb.append(sec);
+
+            mSb.append(mAmTimezoneString);
+
+            return mSb.toString();
+        }
+
+        private String makeDate(Calendar c) {
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            if (day != mDay) {
+                mDay = day;
+                mDateString = mDateFormat.format(c.getTime());
+            }
+
+            return mDateString;
         }
 
         @Override
