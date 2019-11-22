@@ -141,7 +141,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private TimeZone mTimezone;
         private String mHourMinuteString;
         private String mAmTimezoneString;
-        private StringBuilder mSb = new StringBuilder();
+        private StringBuilder mTimeSb = new StringBuilder();
 
         private int mDay;
         private String mDateString;
@@ -306,7 +306,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         }
 
         private String makeTime(Calendar c) {
-            mSb.setLength(0);
+            mTimeSb.setLength(0);
             Date d = c.getTime();
             int minute = c.get(Calendar.MINUTE);
             TimeZone tz = c.getTimeZone();
@@ -317,21 +317,21 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 mAmTimezoneString = mAmTimezoneFormat.format(d);
             }
 
-            mSb.append(mHourMinuteString);
+            mTimeSb.append(mHourMinuteString);
 
             if (!mAmbient) {
                 String sec = Integer.toString(c.get(Calendar.SECOND));
                 if (sec.length() < 2) {
-                    mSb.append("0");
+                    mTimeSb.append("0");
                 }
-                mSb.append(sec);
+                mTimeSb.append(sec);
             } else {
-                mSb.append("--");
+                mTimeSb.append("--");
             }
 
-            mSb.append(mAmTimezoneString);
+            mTimeSb.append(mAmTimezoneString);
 
-            return mSb.toString();
+            return mTimeSb.toString();
         }
 
         private String makeDate(Calendar c) {
