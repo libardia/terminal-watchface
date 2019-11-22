@@ -138,6 +138,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private String mNotifString = "NO_INFO";
 
         private int mMinute;
+        private TimeZone mTimezone;
         private String mHourMinuteString;
         private String mAmTimezoneString;
         private StringBuilder mSb = new StringBuilder();
@@ -308,8 +309,10 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mSb.setLength(0);
             Date d = c.getTime();
             int minute = c.get(Calendar.MINUTE);
-            if (minute != mMinute) {
+            TimeZone tz = c.getTimeZone();
+            if (minute != mMinute || !mTimezone.hasSameRules(tz)) {
                 mMinute = minute;
+                mTimezone = tz;
                 mHourMinuteString = mHourMinuteFormat.format(d);
                 mAmTimezoneString = mAmTimezoneFormat.format(d);
             }
