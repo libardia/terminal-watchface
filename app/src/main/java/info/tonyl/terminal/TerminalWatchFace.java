@@ -93,11 +93,6 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private boolean mRegisteredTimeZoneReceiver = false;
 
         // RELEVANT =======================================
-        private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat("hh:mm:", Locale.getDefault());
-        private SimpleDateFormat mAmTimezoneFormat = new SimpleDateFormat(" a z", Locale.getDefault());
-        private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
-
-
         private static final float TEXT_SIZE_RATIO = 0.065f;
         private static final float TEXT_X_RATIO = 0.1f;
 
@@ -136,10 +131,16 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private String mStepString = "NO_INFO";
         private String mNotifString = "NO_INFO";
 
+        private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat("hh:mm:", Locale.getDefault());
+        private SimpleDateFormat mTimezoneFormat = new SimpleDateFormat(" z", Locale.getDefault());
+        private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
+        private SimpleDateFormat mAmPmFormat = new SimpleDateFormat(" a", Locale.getDefault());
+
         private int mMinute;
         private TimeZone mTimezone;
         private String mHourMinuteString;
-        private String mAmTimezoneString;
+        private String mTimezoneString;
+        private String mAmPmString;
         private StringBuilder mTimeSb = new StringBuilder();
 
         private int mDay;
@@ -305,30 +306,52 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         }
 
         private String makeTime(Calendar c) {
+            // Reset the time string buffer (without making a new one)
             mTimeSb.setLength(0);
+
+            // Get current time values
             Date d = c.getTime();
-            int minute = c.get(Calendar.MINUTE);
+            int m = c.get(Calendar.MINUTE);
             TimeZone tz = c.getTimeZone();
-            if (minute != mMinute || !mTimezone.hasSameRules(tz)) {
-                mMinute = minute;
-                mTimezone = tz;
+
+            // If the minute has changed...
+            if (m != mMinute) {
+                // Cache it, and regenerate the hours, minutes, and AM/PM
+                mMinute = m;
                 mHourMinuteString = mHourMinuteFormat.format(d);
-                mAmTimezoneString = mAmTimezoneFormat.format(d);
+                mAmPmString = mAmPmFormat.format(d);
             }
 
+            // If the timezone has changed...
+            if (!tz.hasSameRules(mTimezone)) {
+                // Cache it, and regenerate the timezone
+                mTimezone = tz;
+                mTimezoneString = mTimezoneFormat.format(d);
+            }
+
+            // Hour and minutes are first in the string
             mTimeSb.append(mHourMinuteString);
 
+            // If we're in interactive mode...
             if (!mAmbient) {
+                // Get the seconds, and make it a string
                 String sec = Integer.toString(c.get(Calendar.SECOND));
+                // but pad it with a 0 if it's one digit
                 if (sec.length() < 2) {
                     mTimeSb.append("0");
                 }
+                // Then stick it on the final string
                 mTimeSb.append(sec);
             } else {
+                // If we're in ambient mode, skip all that and just append dashes
                 mTimeSb.append("--");
             }
 
-            mTimeSb.append(mAmTimezoneString);
+            // Next is the AM/PM string
+            mTimeSb.append(mAmPmString);
+
+            // And finally the timezone
+            mTimeSb.append(mTimezoneString);
 
             return mTimeSb.toString();
         }
