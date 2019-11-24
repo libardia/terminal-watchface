@@ -180,10 +180,12 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
 
             if (mAmbient) {
                 for (TextPaint p : mTextPaints) {
+                    p.setAntiAlias(false);
                     p.setColor(AMBIENT_COLOR);
                 }
             } else {
                 for (int i = 0; i < NUM_PAINTS; i++) {
+                    mTextPaints[i].setAntiAlias(true);
                     mTextPaints[i].setColor(PAINT_COLORS[i]);
                 }
             }
