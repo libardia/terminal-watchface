@@ -239,8 +239,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             // Init paint objects
             for (int i = 0; i < NUM_PAINTS; i++) {
                 TextPaint p = new TextPaint();
-                p.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.consola));
-                p.setFakeBoldText(true);
+                p.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.consolab));
                 p.setTextSize(height * TEXT_SIZE_RATIO);
                 p.setAntiAlias(true);
                 p.setTextAlign(Paint.Align.LEFT);
