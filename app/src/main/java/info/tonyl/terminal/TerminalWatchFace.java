@@ -198,16 +198,14 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 int complicationId, ComplicationData complicationData) {
             switch (complicationId) {
                 case BATTERY_COMP_ID:
-                    float battery = (complicationData.getValue() - complicationData.getMinValue())
-                            / (complicationData.getMaxValue() - complicationData.getMinValue());
-                    int length = Math.round(battery * 10);
-                    int percent = Math.round(battery * 100);
+                    float battery = complicationData.getValue();
+                    int length = Math.round(battery / 10);
                     StringBuilder sb = new StringBuilder("[");
                     for (int i = 0; i < 10; i++) {
                         sb.append(i < length ? "#" : ".");
                     }
                     sb.append("] ");
-                    sb.append(String.format(Locale.getDefault(), "%02d", percent));
+                    sb.append(String.format(Locale.getDefault(), "%02.0f", battery));
                     sb.append("%");
                     mBatteryVisual = sb.toString();
                     break;
