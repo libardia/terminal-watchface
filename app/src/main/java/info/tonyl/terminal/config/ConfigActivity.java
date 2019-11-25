@@ -50,7 +50,7 @@ public class ConfigActivity extends Activity {
             ComplicationProviderInfo complicationProviderInfo =
                     data.getParcelableExtra(ProviderChooserIntent.EXTRA_PROVIDER_INFO);
 
-            String newValue = null;
+            String newValue;
             if (complicationProviderInfo != null) {
                 newValue = complicationProviderInfo.appName;
             } else {

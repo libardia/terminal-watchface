@@ -1,10 +1,5 @@
 package info.tonyl.terminal.config;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import info.tonyl.terminal.R;
-
 public class ConfigItem {
 
     public static final int TEXT_ONLY_TYPE = 0;
