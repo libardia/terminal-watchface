@@ -52,7 +52,7 @@ public class ConfigActivity extends Activity {
 
             String newValue;
             if (complicationProviderInfo != null) {
-                newValue = complicationProviderInfo.appName;
+                newValue = complicationProviderInfo.providerName;
             } else {
                 newValue = getString(R.string.unset_config_value);
             }
