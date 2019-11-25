@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Terminal</string>
     <string name="watch_face_name">Terminal</string>
+    <string name="config_name">Config</string>
+    <string name="weather_comp_setting">Wether data provider</string>
 </resources>
