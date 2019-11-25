@@ -3,4 +3,7 @@
     <string name="watch_face_name">Terminal</string>
     <string name="config_name">Config</string>
     <string name="weather_comp_setting">Wether data provider</string>
+    <string name="setting_pref_name">setting_values</string>
+    <string name="setting_pref_weather">weather</string>
+    <string name="unset_config_value">Not set</string>
 </resources>

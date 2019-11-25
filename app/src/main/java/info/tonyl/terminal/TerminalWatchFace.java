@@ -30,8 +30,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import info.tonyl.terminal.config.ConfigRecyclerViewAdapter;
-
 /**
  * Analog watch face with a ticking second hand. In ambient mode, the second hand isn't
  * shown. On devices with low-bit ambient mode, the hands are drawn without anti-aliasing in ambient
@@ -82,6 +80,11 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         }
     }
 
+    public static final int BATTERY_COMP_ID = 0;
+    public static final int STEP_COMP_ID = 1;
+    public static final int NOTIF_COMP_ID = 2;
+    public final int[] COMP_IDS = {BATTERY_COMP_ID, STEP_COMP_ID, NOTIF_COMP_ID};
+
     private class Engine extends CanvasWatchFaceService.Engine {
         private final Handler mUpdateTimeHandler = new EngineHandler(this);
         private Calendar mCalendar;
@@ -97,11 +100,6 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         // RELEVANT =======================================
         private static final float TEXT_SIZE_RATIO = 0.065f;
         private static final float TEXT_X_RATIO = 0.1f;
-
-        private static final int BATTERY_COMP_ID = 0;
-        private static final int STEP_COMP_ID = 1;
-        private static final int NOTIF_COMP_ID = 2;
-        private final int[] COMP_IDS = {BATTERY_COMP_ID, STEP_COMP_ID, NOTIF_COMP_ID};
 
         private static final int BASE_TEXT_COLOR = Color.WHITE;
         private static final int TIME_COLOR = Color.GREEN;
