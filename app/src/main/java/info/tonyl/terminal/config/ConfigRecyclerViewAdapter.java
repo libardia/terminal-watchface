@@ -124,7 +124,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     Intent chooser = ComplicationHelperActivity.createProviderChooserHelperIntent(
                             mConfigActivity,
                             watchfaceComponentName,
-                            TerminalWatchFace.NOTIF_COMP_ID,
+                            TerminalWatchFace.TEMP_COMP_ID,
                             ComplicationData.TYPE_SHORT_TEXT);
 
                     mConfigActivity.startActivityForResult(chooser, ConfigActivity.WEATHER_COMPLICATION_CONFIG_CODE);

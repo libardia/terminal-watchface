@@ -82,8 +82,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
 
     public static final int BATTERY_COMP_ID = 0;
     public static final int STEP_COMP_ID = 1;
-    public static final int NOTIF_COMP_ID = 2;
-    public final int[] COMP_IDS = {BATTERY_COMP_ID, STEP_COMP_ID, NOTIF_COMP_ID};
+    public static final int TEMP_COMP_ID = 2;
+    public final int[] COMP_IDS = {BATTERY_COMP_ID, STEP_COMP_ID, TEMP_COMP_ID};
 
     private class Engine extends CanvasWatchFaceService.Engine {
         private final Handler mUpdateTimeHandler = new EngineHandler(this);
@@ -106,8 +106,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private static final int DATE_COLOR = Color.CYAN;
         private static final int BATTERY_COLOR = Color.MAGENTA;
         private static final int STEP_COLOR = Color.RED;
-        private static final int NOTIF_COLOR = Color.YELLOW;
-        private int[] PAINT_COLORS = {BASE_TEXT_COLOR, TIME_COLOR, DATE_COLOR, BATTERY_COLOR, STEP_COLOR, NOTIF_COLOR};
+        private static final int TEMP_COLOR = Color.YELLOW;
+        private int[] PAINT_COLORS = {BASE_TEXT_COLOR, TIME_COLOR, DATE_COLOR, BATTERY_COLOR, STEP_COLOR, TEMP_COLOR};
 
         private static final int AMBIENT_COLOR = Color.GRAY;
 
@@ -119,7 +119,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private static final int DATE_PAINT = 2;
         private static final int BATTERY_PAINT = 3;
         private static final int STEP_PAINT = 4;
-        private static final int NOTIF_PAINT = 5;
+        private static final int TEMP_PAINT = 5;
 
         private List<String> messages;
         private float mTextX;
@@ -129,7 +129,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private float mCenterY;
         private String mBatteryVisual = "NO_INFO";
         private String mStepString = "NO_INFO";
-        private String mNotifString = "NO_INFO";
+        private String mTempString = "NO_INFO";
 
         private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat("hh:mm:", Locale.getDefault());
         private SimpleDateFormat mTimezoneFormat = new SimpleDateFormat(" z", Locale.getDefault());
@@ -157,7 +157,6 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             setActiveComplications(COMP_IDS);
 
             setWatchFaceStyle(new WatchFaceStyle.Builder(TerminalWatchFace.this)
-                    .setHideNotificationIndicator(true)
                     .build());
         }
 
@@ -212,8 +211,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 case STEP_COMP_ID:
                     mStepString = getShortText(complicationData);
                     break;
-                case NOTIF_COMP_ID:
-                    mNotifString = getShortText(complicationData);
+                case TEMP_COMP_ID:
+                    mTempString = getShortText(complicationData);
                     break;
             }
             invalidate();
@@ -255,7 +254,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             messages.add("[DATE] ");
             messages.add("[BATT] ");
             messages.add("[STEP] ");
-            messages.add("[NTIF] ");
+            messages.add("[TEMP] ");
             messages.add("tonyl@watch:~ $");
 
             float totalTextHeight = (messages.size() - 1) * mTextPaints[BASE_PAINT].getFontSpacing();
@@ -267,7 +266,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             // Init complications
             setDefaultSystemComplicationProvider(BATTERY_COMP_ID, SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
             setDefaultSystemComplicationProvider(STEP_COMP_ID, SystemProviders.STEP_COUNT, ComplicationData.TYPE_SHORT_TEXT);
-            setDefaultSystemComplicationProvider(NOTIF_COMP_ID, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
+            setDefaultComplicationProvider(TEMP_COMP_ID, null, ComplicationData.TYPE_EMPTY);
         }
 
         @Override
@@ -297,7 +296,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                         canvas.drawText(mStepString, mExtraTextX, y, mTextPaints[STEP_PAINT]);
                         break;
                     case 5:
-                        canvas.drawText(mNotifString, mExtraTextX, y, mTextPaints[NOTIF_PAINT]);
+                        canvas.drawText(mTempString, mExtraTextX, y, mTextPaints[TEMP_PAINT]);
                         break;
                 }
                 y += mTextPaints[BASE_PAINT].getFontSpacing();
