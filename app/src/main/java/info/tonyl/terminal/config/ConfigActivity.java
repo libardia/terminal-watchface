@@ -8,6 +8,7 @@ import android.support.wearable.complications.ProviderChooserIntent;
 import android.util.Log;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
 import info.tonyl.terminal.R;
@@ -32,7 +33,7 @@ public class ConfigActivity extends Activity {
         // Aligns the first and last items on the list vertically centered on the screen.
         mWearableRecyclerView.setEdgeItemsCenteringEnabled(true);
 
-        mWearableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mWearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(this));
 
         // Improves performance because we know changes in content do not change the layout size of
         // the RecyclerView.

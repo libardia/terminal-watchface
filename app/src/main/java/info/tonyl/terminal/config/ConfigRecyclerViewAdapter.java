@@ -5,6 +5,7 @@ import android.support.wearable.complications.ComplicationProviderInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +26,11 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.weather_comp_setting),
                 ConfigItem.TEXT_ONLY_TYPE));
+        for (int i = 0; i < 20; i++) {
+            mConfigItems.add(new ConfigItem(
+                    mContext.getString(R.string.weather_comp_setting),
+                    ConfigItem.TEXT_ONLY_TYPE));
+        }
     }
 
     @NonNull
@@ -44,7 +50,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        ConfigItemViewHolder configHolder = (ConfigItemViewHolder) holder;
+        configHolder.fill(mConfigItems.get(position));
     }
 
     @Override
@@ -61,9 +68,14 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public class ConfigItemViewHolder extends RecyclerView.ViewHolder  {
+    public class ConfigItemViewHolder extends RecyclerView.ViewHolder {
         public ConfigItemViewHolder(@NonNull View itemView) {
             super(itemView);
+        }
+
+        public void fill(ConfigItem configItem) {
+            TextView descView = itemView.findViewById(R.id.description);
+            descView.setText(configItem.getDescription());
         }
     }
 }
