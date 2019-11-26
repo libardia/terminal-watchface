@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationHelperActivity;
+import android.support.wearable.input.RemoteInputIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.RemoteInput;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private List<ConfigItem> mConfigItems;
 
     public static final int WEATHER_SETTING = 0;
+    public static final int USERNAME_SETTING = 1;
 
     public ConfigRecyclerViewAdapter(Context context, Activity configActivity) {
         mContext = context;
@@ -43,6 +46,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 getPrefString(prefs, R.string.setting_pref_weather, R.string.unset_config_value),
                 ConfigItem.TEXT_ONLY_TYPE,
                 WEATHER_SETTING));
+        mConfigItems.add(new ConfigItem(
+                mContext.getString(R.string.username_setting),
+                R.drawable.common_google_signin_btn_text_dark,
+                getPrefString(prefs, R.string.setting_pref_username, R.string.default_username),
+                ConfigItem.TEXT_ONLY_TYPE,
+                USERNAME_SETTING));
     }
 
     private String getPrefString(SharedPreferences prefs, int key, int def) {
@@ -128,6 +137,14 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                             ComplicationData.TYPE_SHORT_TEXT);
 
                     mConfigActivity.startActivityForResult(chooser, ConfigActivity.WEATHER_COMPLICATION_CONFIG_CODE);
+                    break;
+                case USERNAME_SETTING:
+                    RemoteInput input = new RemoteInput.Builder(mContext.getString(R.string.username_input_result_key))
+                            .setLabel("User name")
+                            .build();
+                    Intent intent = new Intent(RemoteInputIntent.ACTION_REMOTE_INPUT);
+                    intent.putExtra(RemoteInputIntent.EXTRA_REMOTE_INPUTS, new RemoteInput[]{input});
+                    mConfigActivity.startActivityForResult(intent, ConfigActivity.USERNAME_CONFIG_CODE);
                     break;
             }
         }

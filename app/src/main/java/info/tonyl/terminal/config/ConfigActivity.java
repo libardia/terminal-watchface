@@ -1,6 +1,7 @@
 package info.tonyl.terminal.config;
 
 import android.app.Activity;
+import android.app.RemoteInput;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +17,8 @@ import info.tonyl.terminal.R;
 public class ConfigActivity extends Activity {
     private static final String TAG = ConfigActivity.class.getSimpleName();
 
-    static final int WEATHER_COMPLICATION_CONFIG_CODE = 1001;
+    public static final int WEATHER_COMPLICATION_CONFIG_CODE = 1001;
+    public static final int USERNAME_CONFIG_CODE = 1002;
 
     private WearableRecyclerView mWearableRecyclerView;
     private ConfigRecyclerViewAdapter mAdapter;
@@ -44,8 +46,11 @@ public class ConfigActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == WEATHER_COMPLICATION_CONFIG_CODE
-                && resultCode == RESULT_OK) {
+        // The preferences we put the values back into
+        SharedPreferences sp = getApplicationContext().getSharedPreferences(
+                getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
+
+        if (requestCode == WEATHER_COMPLICATION_CONFIG_CODE && resultCode == RESULT_OK) {
             // Retrieves information for selected Complication provider.
             ComplicationProviderInfo complicationProviderInfo =
                     data.getParcelableExtra(ProviderChooserIntent.EXTRA_PROVIDER_INFO);
@@ -58,14 +63,19 @@ public class ConfigActivity extends Activity {
             }
 
             // Set back the current value in the config item
-            SharedPreferences sp = getApplicationContext().getSharedPreferences(
-                    getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
-
             sp.edit()
                     .putString(getString(R.string.setting_pref_weather), newValue)
                     .apply();
 
             mAdapter.setValueFor(ConfigRecyclerViewAdapter.WEATHER_SETTING, newValue);
+        } else if (requestCode == USERNAME_CONFIG_CODE && resultCode == RESULT_OK) {
+            Bundle results = RemoteInput.getResultsFromIntent(data);
+            String username = results.getCharSequence(getString(R.string.username_input_result_key)).toString();
+
+            // Set the username into the config
+            sp.edit()
+                    .putString(getString(R.string.setting_pref_username), username)
+                    .apply();
         }
     }
 }

@@ -6,4 +6,8 @@
     <string name="setting_pref_name">setting_values</string>
     <string name="setting_pref_weather">weather</string>
     <string name="unset_config_value">Not set</string>
+    <string name="setting_pref_username">username</string>
+    <string name="default_username">tonyl</string>
+    <string name="username_setting">User name</string>
+    <string name="username_input_result_key">username_input</string>
 </resources>

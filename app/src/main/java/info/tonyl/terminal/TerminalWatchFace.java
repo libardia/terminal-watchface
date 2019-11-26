@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -248,14 +249,16 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             }
 
             // Set up text and calculate position values
+            SharedPreferences prefs = getSharedPreferences(getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
+            String username = prefs.getString(getString(R.string.setting_pref_username), getString(R.string.default_username));
             messages = new ArrayList<>();
-            messages.add("tonyl@watch:~ $ now");
+            messages.add(username + "@watch:~ $ now");
             messages.add("[TIME] ");
             messages.add("[DATE] ");
             messages.add("[BATT] ");
             messages.add("[STEP] ");
             messages.add("[TEMP] ");
-            messages.add("tonyl@watch:~ $");
+            messages.add(username + "@watch:~ $");
 
             float totalTextHeight = (messages.size() - 1) * mTextPaints[BASE_PAINT].getFontSpacing();
             mTextX = mCenterX - mTextPaints[BASE_PAINT].measureText(messages.get(0)) / 2;
