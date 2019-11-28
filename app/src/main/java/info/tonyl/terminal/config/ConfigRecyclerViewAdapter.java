@@ -47,7 +47,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 WEATHER_SETTING));
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.username_setting),
-                R.drawable.common_google_signin_btn_text_dark,
+                R.drawable.icn_styles,
                 getPrefString(Settings.SETTING_USERNAME, R.string.default_username),
                 ConfigItem.TEXT_ONLY_TYPE,
                 USERNAME_SETTING));
