@@ -13,6 +13,8 @@ import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
 import info.tonyl.terminal.R;
+import info.tonyl.terminal.constants.RemoteInputConstants;
+import info.tonyl.terminal.constants.Settings;
 
 public class ConfigActivity extends Activity {
     private static final String TAG = ConfigActivity.class.getSimpleName();
@@ -48,7 +50,7 @@ public class ConfigActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // The preferences we put the values back into
         SharedPreferences sp = getApplicationContext().getSharedPreferences(
-                getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
+                Settings.PREF_NAME, Context.MODE_PRIVATE);
 
         if (requestCode == WEATHER_COMPLICATION_CONFIG_CODE && resultCode == RESULT_OK) {
             // Retrieves information for selected Complication provider.
@@ -64,17 +66,17 @@ public class ConfigActivity extends Activity {
 
             // Set back the current value in the config item
             sp.edit()
-                    .putString(getString(R.string.setting_pref_weather), newValue)
+                    .putString(Settings.SETTING_WEATHER, newValue)
                     .apply();
 
             mAdapter.setValueFor(ConfigRecyclerViewAdapter.WEATHER_SETTING, newValue);
         } else if (requestCode == USERNAME_CONFIG_CODE && resultCode == RESULT_OK) {
             Bundle results = RemoteInput.getResultsFromIntent(data);
-            String username = results.getCharSequence(getString(R.string.username_input_result_key)).toString();
+            String username = results.getCharSequence(RemoteInputConstants.USERNAME_INPUT_KEY).toString();
 
             // Set the username into the config
             sp.edit()
-                    .putString(getString(R.string.setting_pref_username), username)
+                    .putString(Settings.SETTING_USERNAME, username)
                     .apply();
         }
     }

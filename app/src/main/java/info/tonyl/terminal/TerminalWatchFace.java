@@ -31,6 +31,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import info.tonyl.terminal.constants.Settings;
+
 /**
  * Analog watch face with a ticking second hand. In ambient mode, the second hand isn't
  * shown. On devices with low-bit ambient mode, the hands are drawn without anti-aliasing in ambient
@@ -249,8 +251,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             }
 
             // Set up text and calculate position values
-            SharedPreferences prefs = getSharedPreferences(getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
-            String username = prefs.getString(getString(R.string.setting_pref_username), getString(R.string.default_username));
+            SharedPreferences prefs = getSharedPreferences(Settings.PREF_NAME, Context.MODE_PRIVATE);
+            String username = prefs.getString(Settings.SETTING_USERNAME, getString(R.string.default_username));
             messages = new ArrayList<>();
             messages.add(username + "@watch:~ $ now");
             messages.add("[TIME] ");

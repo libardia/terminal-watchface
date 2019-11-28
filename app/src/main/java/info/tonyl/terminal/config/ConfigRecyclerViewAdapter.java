@@ -24,6 +24,8 @@ import java.util.List;
 
 import info.tonyl.terminal.R;
 import info.tonyl.terminal.TerminalWatchFace;
+import info.tonyl.terminal.constants.RemoteInputConstants;
+import info.tonyl.terminal.constants.Settings;
 
 public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -37,25 +39,25 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public ConfigRecyclerViewAdapter(Context context, Activity configActivity) {
         mContext = context;
         SharedPreferences prefs = mContext.getSharedPreferences(
-                mContext.getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
+                Settings.PREF_NAME, Context.MODE_PRIVATE);
         mConfigActivity = configActivity;
         mConfigItems = new ArrayList<>();
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.weather_comp_setting),
                 R.drawable.ic_landscape_white,
-                getPrefString(prefs, R.string.setting_pref_weather, R.string.unset_config_value),
+                getPrefString(prefs, Settings.SETTING_WEATHER, R.string.unset_config_value),
                 ConfigItem.TEXT_ONLY_TYPE,
                 WEATHER_SETTING));
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.username_setting),
                 R.drawable.common_google_signin_btn_text_dark,
-                getPrefString(prefs, R.string.setting_pref_username, R.string.default_username),
+                getPrefString(prefs, Settings.SETTING_USERNAME, R.string.default_username),
                 ConfigItem.TEXT_ONLY_TYPE,
                 USERNAME_SETTING));
     }
 
-    private String getPrefString(SharedPreferences prefs, int key, int def) {
-        return prefs.getString(mContext.getString(key), mContext.getString(def));
+    private String getPrefString(SharedPreferences prefs, String key, int def) {
+        return prefs.getString(key, mContext.getString(def));
     }
 
     @NonNull
@@ -139,8 +141,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     mConfigActivity.startActivityForResult(chooser, ConfigActivity.WEATHER_COMPLICATION_CONFIG_CODE);
                     break;
                 case USERNAME_SETTING:
-                    RemoteInput input = new RemoteInput.Builder(mContext.getString(R.string.username_input_result_key))
-                            .setLabel("User name")
+                    RemoteInput input = new RemoteInput.Builder(RemoteInputConstants.USERNAME_INPUT_KEY)
+                            .setLabel(mContext.getString(R.string.username_setting))
                             .build();
                     Intent intent = new Intent(RemoteInputIntent.ACTION_REMOTE_INPUT);
                     intent.putExtra(RemoteInputIntent.EXTRA_REMOTE_INPUTS, new RemoteInput[]{input});
