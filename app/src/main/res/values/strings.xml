@@ -7,4 +7,6 @@
     <string name="username_setting">User name</string>
     <string name="unset_config_value">Not set</string>
     <string name="default_username">tonyl</string>
+    <string name="start_message_postfix">\@watch:~ $ now</string>
+    <string name="end_message_postfix">\@watch:~ $</string>
 </resources>

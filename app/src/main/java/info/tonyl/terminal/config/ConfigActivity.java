@@ -2,9 +2,7 @@ package info.tonyl.terminal.config;
 
 import android.app.Activity;
 import android.app.RemoteInput;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderChooserIntent;
@@ -13,6 +11,7 @@ import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
 import info.tonyl.terminal.R;
+import info.tonyl.terminal.TerminalWatchFace;
 import info.tonyl.terminal.constants.RemoteInputConstants;
 import info.tonyl.terminal.constants.Settings;
 
@@ -48,10 +47,6 @@ public class ConfigActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // The preferences we put the values back into
-        SharedPreferences sp = getApplicationContext().getSharedPreferences(
-                Settings.PREF_NAME, Context.MODE_PRIVATE);
-
         if (requestCode == WEATHER_COMPLICATION_CONFIG_CODE && resultCode == RESULT_OK) {
             // Retrieves information for selected Complication provider.
             ComplicationProviderInfo complicationProviderInfo =
@@ -65,7 +60,7 @@ public class ConfigActivity extends Activity {
             }
 
             // Set back the current value in the config item
-            sp.edit()
+            TerminalWatchFace.getPrefs().edit()
                     .putString(Settings.SETTING_WEATHER, newValue)
                     .apply();
 
@@ -75,9 +70,12 @@ public class ConfigActivity extends Activity {
             String username = results.getCharSequence(RemoteInputConstants.USERNAME_INPUT_KEY).toString();
 
             // Set the username into the config
-            sp.edit()
+            TerminalWatchFace.getPrefs().edit()
                     .putString(Settings.SETTING_USERNAME, username)
                     .apply();
+
+            mAdapter.setValueFor(ConfigRecyclerViewAdapter.USERNAME_SETTING, username);
+            TerminalWatchFace.updateUsernameMessages(getApplicationContext());
         }
     }
 }

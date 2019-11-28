@@ -1,10 +1,10 @@
 package info.tonyl.terminal.config;
 
 import android.app.Activity;
+import android.app.RemoteInput;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationHelperActivity;
@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.RemoteInput;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -38,26 +37,24 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     public ConfigRecyclerViewAdapter(Context context, Activity configActivity) {
         mContext = context;
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                Settings.PREF_NAME, Context.MODE_PRIVATE);
         mConfigActivity = configActivity;
         mConfigItems = new ArrayList<>();
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.weather_comp_setting),
                 R.drawable.ic_landscape_white,
-                getPrefString(prefs, Settings.SETTING_WEATHER, R.string.unset_config_value),
+                getPrefString(Settings.SETTING_WEATHER, R.string.unset_config_value),
                 ConfigItem.TEXT_ONLY_TYPE,
                 WEATHER_SETTING));
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.username_setting),
                 R.drawable.common_google_signin_btn_text_dark,
-                getPrefString(prefs, Settings.SETTING_USERNAME, R.string.default_username),
+                getPrefString(Settings.SETTING_USERNAME, R.string.default_username),
                 ConfigItem.TEXT_ONLY_TYPE,
                 USERNAME_SETTING));
     }
 
-    private String getPrefString(SharedPreferences prefs, String key, int def) {
-        return prefs.getString(key, mContext.getString(def));
+    private String getPrefString(String key, int def) {
+        return TerminalWatchFace.getPrefs().getString(key, mContext.getString(def));
     }
 
     @NonNull

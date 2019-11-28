@@ -88,7 +88,23 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
     public static final int TEMP_COMP_ID = 2;
     public final int[] COMP_IDS = {BATTERY_COMP_ID, STEP_COMP_ID, TEMP_COMP_ID};
 
+    private static String mStartMessage;
+    private static String mEndMessage;
+    private static SharedPreferences mPrefs;
+
+    public static void updateUsernameMessages(Context context) {
+        String username = getPrefs().getString(
+                Settings.SETTING_USERNAME, context.getString(R.string.default_username));
+        mStartMessage = username + context.getString(R.string.start_message_postfix);
+        mEndMessage = username + context.getString(R.string.end_message_postfix);
+    }
+
+    public static SharedPreferences getPrefs() {
+        return mPrefs;
+    }
+
     private class Engine extends CanvasWatchFaceService.Engine {
+
         private final Handler mUpdateTimeHandler = new EngineHandler(this);
         private Calendar mCalendar;
         private final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
@@ -124,7 +140,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private static final int STEP_PAINT = 4;
         private static final int TEMP_PAINT = 5;
 
-        private List<String> messages;
+        private List<String> mMessages;
         private float mTextX;
         private float mExtraTextX;
         private float mTextY;
@@ -154,6 +170,9 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
 
+            mPrefs = getApplication().getSharedPreferences(Settings.PREF_NAME, MODE_PRIVATE);
+            updateUsernameMessages(getApplicationContext());
+
             mCalendar = Calendar.getInstance();
             mTextPaints = new TextPaint[NUM_PAINTS];
 
@@ -166,6 +185,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         @Override
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+            mPrefs = null;
             super.onDestroy();
         }
 
@@ -251,21 +271,19 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             }
 
             // Set up text and calculate position values
-            SharedPreferences prefs = getSharedPreferences(Settings.PREF_NAME, Context.MODE_PRIVATE);
-            String username = prefs.getString(Settings.SETTING_USERNAME, getString(R.string.default_username));
-            messages = new ArrayList<>();
-            messages.add(username + "@watch:~ $ now");
-            messages.add("[TIME] ");
-            messages.add("[DATE] ");
-            messages.add("[BATT] ");
-            messages.add("[STEP] ");
-            messages.add("[TEMP] ");
-            messages.add(username + "@watch:~ $");
+            mMessages = new ArrayList<>();
+            mMessages.add("[TIME] ");
+            mMessages.add("[DATE] ");
+            mMessages.add("[BATT] ");
+            mMessages.add("[STEP] ");
+            mMessages.add("[TEMP] ");
 
-            float totalTextHeight = (messages.size() - 1) * mTextPaints[BASE_PAINT].getFontSpacing();
-            mTextX = mCenterX - mTextPaints[BASE_PAINT].measureText(messages.get(0)) / 2;
+            // messages.size - 1 is how many are in this list, but we need two more, the start and end messages
+            float totalTextHeight = ((mMessages.size() - 1) + 2) * mTextPaints[BASE_PAINT].getFontSpacing();
+
+            mTextX = mCenterX - mTextPaints[BASE_PAINT].measureText(mMessages.get(0)) / 2;
             mTextX = width * TEXT_X_RATIO;
-            mExtraTextX = mTextX + mTextPaints[BASE_PAINT].measureText(messages.get(1));
+            mExtraTextX = mTextX + mTextPaints[BASE_PAINT].measureText(mMessages.get(1));
             mTextY = mCenterY - totalTextHeight / 2;
 
             // Init complications
@@ -284,28 +302,36 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
 
             // Draw text
             float y = mTextY;
-            for (int i = 0; i < messages.size(); i++) {
-                String message = messages.get(i);
+
+            // Draw the first line (with the username in it)
+            canvas.drawText(mStartMessage, mTextX, y, mTextPaints[BASE_PAINT]);
+            y += mTextPaints[BASE_PAINT].getFontSpacing();
+
+            for (int i = 0; i < mMessages.size(); i++) {
+                String message = mMessages.get(i);
                 canvas.drawText(message, mTextX, y, mTextPaints[BASE_PAINT]);
                 switch (i) {
-                    case 1:
+                    case 0:
                         canvas.drawText(makeTime(mCalendar), mExtraTextX, y, mTextPaints[TIME_PAINT]);
                         break;
-                    case 2:
+                    case 1:
                         canvas.drawText(makeDate(mCalendar), mExtraTextX, y, mTextPaints[DATE_PAINT]);
                         break;
-                    case 3:
+                    case 2:
                         canvas.drawText(mBatteryVisual, mExtraTextX, y, mTextPaints[BATTERY_PAINT]);
                         break;
-                    case 4:
+                    case 3:
                         canvas.drawText(mStepString, mExtraTextX, y, mTextPaints[STEP_PAINT]);
                         break;
-                    case 5:
+                    case 4:
                         canvas.drawText(mTempString, mExtraTextX, y, mTextPaints[TEMP_PAINT]);
                         break;
                 }
                 y += mTextPaints[BASE_PAINT].getFontSpacing();
             }
+
+            // Draw the last line (also has the username in it)
+            canvas.drawText(mEndMessage, mTextX, y, mTextPaints[BASE_PAINT]);
         }
 
         private String makeTime(Calendar c) {
