@@ -12,6 +12,7 @@ import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
 import info.tonyl.terminal.R;
+import info.tonyl.terminal.constants.Settings;
 
 public class ConfigActivity extends Activity {
     private static final String TAG = ConfigActivity.class.getSimpleName();
@@ -59,10 +60,10 @@ public class ConfigActivity extends Activity {
 
             // Set back the current value in the config item
             SharedPreferences sp = getApplicationContext().getSharedPreferences(
-                    getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
+                    Settings.PREF_NAME, Context.MODE_PRIVATE);
 
             sp.edit()
-                    .putString(getString(R.string.setting_pref_weather), newValue)
+                    .putString(Settings.SETTING_WEATHER, newValue)
                     .apply();
 
             mAdapter.setValueFor(ConfigRecyclerViewAdapter.WEATHER_SETTING, newValue);

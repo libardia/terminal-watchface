@@ -22,6 +22,7 @@ import java.util.List;
 
 import info.tonyl.terminal.R;
 import info.tonyl.terminal.TerminalWatchFace;
+import info.tonyl.terminal.constants.Settings;
 
 public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -34,19 +35,19 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public ConfigRecyclerViewAdapter(Context context, Activity configActivity) {
         mContext = context;
         SharedPreferences prefs = mContext.getSharedPreferences(
-                mContext.getString(R.string.setting_pref_name), Context.MODE_PRIVATE);
+                Settings.PREF_NAME, Context.MODE_PRIVATE);
         mConfigActivity = configActivity;
         mConfigItems = new ArrayList<>();
         mConfigItems.add(new ConfigItem(
                 mContext.getString(R.string.weather_comp_setting),
                 R.drawable.ic_landscape_white,
-                getPrefString(prefs, R.string.setting_pref_weather, R.string.unset_config_value),
+                getPrefString(prefs, Settings.SETTING_WEATHER, R.string.unset_config_value),
                 ConfigItem.TEXT_ONLY_TYPE,
                 WEATHER_SETTING));
     }
 
-    private String getPrefString(SharedPreferences prefs, int key, int def) {
-        return prefs.getString(mContext.getString(key), mContext.getString(def));
+    private String getPrefString(SharedPreferences prefs, String key, int def) {
+        return prefs.getString(key, mContext.getString(def));
     }
 
     @NonNull
