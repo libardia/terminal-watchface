@@ -236,7 +236,9 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                     break;
                 case TEMP_COMP_ID:
                     mTempString = getShortText(complicationData);
-                    mTempString = mTempString.replaceFirst(" ℉","°");
+                    // Yes, these are hardcoded strings, I know. But the space in the pattern
+                    // makes cutting these into string resources extremely annoying.
+                    mTempString = mTempString.replaceFirst(" ℉", "°");
                     break;
             }
             invalidate();
