@@ -236,6 +236,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                     break;
                 case TEMP_COMP_ID:
                     mTempString = getShortText(complicationData);
+                    mTempString = mTempString.replaceFirst(" ℉","°");
                     break;
             }
             invalidate();
