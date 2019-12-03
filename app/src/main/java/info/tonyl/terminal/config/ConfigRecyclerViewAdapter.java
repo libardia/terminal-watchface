@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.tonyl.terminal.BuildConfig;
 import info.tonyl.terminal.R;
 import info.tonyl.terminal.TerminalWatchFace;
 import info.tonyl.terminal.constants.RemoteInputConstants;
@@ -34,6 +35,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static final int WEATHER_SETTING = 0;
     public static final int USERNAME_SETTING = 1;
+    public static final int ABOUT_VERSION = 2;
 
     public ConfigRecyclerViewAdapter(Context context, Activity configActivity) {
         mContext = context;
@@ -51,6 +53,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 getPrefString(Settings.SETTING_USERNAME, R.string.default_username),
                 ConfigItem.TEXT_ONLY_TYPE,
                 USERNAME_SETTING));
+        mConfigItems.add(new ConfigItem(
+                mContext.getString(R.string.version_setting),
+                R.drawable.icn_styles,
+                BuildConfig.VERSION_NAME,
+                ConfigItem.TEXT_ONLY_TYPE,
+                ABOUT_VERSION));
     }
 
     private String getPrefString(String key, int def) {
