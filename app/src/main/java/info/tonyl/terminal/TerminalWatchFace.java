@@ -32,6 +32,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import info.tonyl.terminal.constants.Settings;
+import info.tonyl.terminal.constants.TemperatureConstants;
 
 /**
  * Analog watch face with a ticking second hand. In ambient mode, the second hand isn't
@@ -236,9 +237,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                     break;
                 case TEMP_COMP_ID:
                     mTempString = getShortText(complicationData);
-                    // Yes, these are hardcoded strings, I know. But the space in the pattern
-                    // makes cutting these into string resources extremely annoying.
-                    mTempString = mTempString.replaceFirst(" ℉", "°");
+                    // Only supports Fahrenheit at the moment
+                    mTempString = mTempString.replaceFirst(TemperatureConstants.TEMPERATURE_PATTERN_F, TemperatureConstants.TEMPERATURE_REPLACEMENT);
                     break;
             }
             invalidate();

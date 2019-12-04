@@ -5,7 +5,6 @@ public class Settings {
         // Hiding constructor
     }
 
-
     // Pref file name
     public static final String PREF_NAME = "setting_values";
 
