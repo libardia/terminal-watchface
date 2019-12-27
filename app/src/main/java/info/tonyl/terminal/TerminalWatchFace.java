@@ -152,12 +152,17 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private String mStepString = ComplicationDataConstants.NO_INFO;
         private String mTempString = ComplicationDataConstants.NO_INFO;
 
-        private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat("hh:mm:", Locale.getDefault());
-        private SimpleDateFormat mTimezoneFormat = new SimpleDateFormat(" z", Locale.getDefault());
-        private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE", Locale.getDefault());
-        private SimpleDateFormat mAmPmFormat = new SimpleDateFormat(" a", Locale.getDefault());
+        private static final String HM_FORMAT_STRING = "hh:mm:";
+        private static final String TZ_FORMAT_STRING = " z";
+        private static final String D_FORMAT_STRING = "yyyy-MM-dd EEE";
+        private static final String AMPM_FORMAT_STRING = " a";
+        private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat(HM_FORMAT_STRING, Locale.getDefault());
+        private SimpleDateFormat mTimezoneFormat = new SimpleDateFormat(TZ_FORMAT_STRING, Locale.getDefault());
+        private SimpleDateFormat mDateFormat = new SimpleDateFormat(D_FORMAT_STRING, Locale.getDefault());
+        private SimpleDateFormat mAmPmFormat = new SimpleDateFormat(AMPM_FORMAT_STRING, Locale.getDefault());
 
         private int mMinute;
+        private int mHour;
         private TimeZone mTimezone;
         private String mHourMinuteString;
         private String mTimezoneString;
@@ -345,22 +350,32 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             // Get current time values
             Date d = c.getTime();
             int m = c.get(Calendar.MINUTE);
+            int h = c.get(Calendar.HOUR);
             TimeZone tz = TimeZone.getDefault();
 
             // If the timezone has changed...
             if (!tz.equals(mTimezone)) {
-                // Cache it, and regenerate the timezone
-                mTimezone = tz;
-                mCalendar.setTimeZone(tz);
+                // Update the format objects (because the locale probably changed)
+                mHourMinuteFormat = new SimpleDateFormat(HM_FORMAT_STRING, Locale.getDefault());
+                mTimezoneFormat = new SimpleDateFormat(TZ_FORMAT_STRING, Locale.getDefault());
+                mDateFormat = new SimpleDateFormat(D_FORMAT_STRING, Locale.getDefault());
+                mAmPmFormat = new SimpleDateFormat(AMPM_FORMAT_STRING, Locale.getDefault());
+
+                // Regenerate the calendar, and cache the timezone
+                mCalendar = Calendar.getInstance();
+                mTimezone = mCalendar.getTimeZone();
                 d = mCalendar.getTime();
                 m = c.get(Calendar.MINUTE);
+                h = c.get(Calendar.HOUR);
                 mTimezoneString = mTimezoneFormat.format(d);
             }
 
-            // If the minute has changed...
-            if (m != mMinute) {
+            // If the minute or hour has changed...
+            // (hour check only necessary if the timezone changed)
+            if (m != mMinute || h != mHour) {
                 // Cache it, and regenerate the hours, minutes, and AM/PM
                 mMinute = m;
+                mHour = h;
                 mHourMinuteString = mHourMinuteFormat.format(d);
                 mAmPmString = mAmPmFormat.format(d);
             }
