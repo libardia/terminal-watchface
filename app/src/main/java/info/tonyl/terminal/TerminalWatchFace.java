@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import info.tonyl.terminal.constants.ComplicationDataConstants;
 import info.tonyl.terminal.constants.Settings;
 import info.tonyl.terminal.constants.TemperatureConstants;
 
@@ -147,9 +148,9 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private float mTextY;
         private float mCenterX;
         private float mCenterY;
-        private String mBatteryVisual = "NO_INFO";
-        private String mStepString = "NO_INFO";
-        private String mTempString = "NO_INFO";
+        private String mBatteryVisual = ComplicationDataConstants.NO_INFO;
+        private String mStepString = ComplicationDataConstants.NO_INFO;
+        private String mTempString = ComplicationDataConstants.NO_INFO;
 
         private SimpleDateFormat mHourMinuteFormat = new SimpleDateFormat("hh:mm:", Locale.getDefault());
         private SimpleDateFormat mTimezoneFormat = new SimpleDateFormat(" z", Locale.getDefault());
@@ -248,7 +249,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             // It is truly ridiculous the effort you have to go through just to get the goddamn string out of this thing
             ComplicationText text = data.getShortText();
             if (text == null) {
-                return "NO_INFO";
+                return ComplicationDataConstants.NO_INFO;
             }
             return text.getText(getApplicationContext(), System.currentTimeMillis()).toString();
         }
@@ -344,7 +345,17 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             // Get current time values
             Date d = c.getTime();
             int m = c.get(Calendar.MINUTE);
-            TimeZone tz = c.getTimeZone();
+            TimeZone tz = TimeZone.getDefault();
+
+            // If the timezone has changed...
+            if (!tz.equals(mTimezone)) {
+                // Cache it, and regenerate the timezone
+                mTimezone = tz;
+                mCalendar.setTimeZone(tz);
+                d = mCalendar.getTime();
+                m = c.get(Calendar.MINUTE);
+                mTimezoneString = mTimezoneFormat.format(d);
+            }
 
             // If the minute has changed...
             if (m != mMinute) {
@@ -354,12 +365,6 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 mAmPmString = mAmPmFormat.format(d);
             }
 
-            // If the timezone has changed...
-            if (!tz.hasSameRules(mTimezone)) {
-                // Cache it, and regenerate the timezone
-                mTimezone = tz;
-                mTimezoneString = mTimezoneFormat.format(d);
-            }
 
             // Hour and minutes are first in the string
             mTimeSb.append(mHourMinuteString);
