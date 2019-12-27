@@ -321,10 +321,10 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 canvas.drawText(message, mTextX, y, mTextPaints[BASE_PAINT]);
                 switch (i) {
                     case 0:
-                        canvas.drawText(makeTime(mCalendar), mExtraTextX, y, mTextPaints[TIME_PAINT]);
+                        canvas.drawText(makeTime(), mExtraTextX, y, mTextPaints[TIME_PAINT]);
                         break;
                     case 1:
-                        canvas.drawText(makeDate(mCalendar), mExtraTextX, y, mTextPaints[DATE_PAINT]);
+                        canvas.drawText(makeDate(), mExtraTextX, y, mTextPaints[DATE_PAINT]);
                         break;
                     case 2:
                         canvas.drawText(mBatteryVisual, mExtraTextX, y, mTextPaints[BATTERY_PAINT]);
@@ -343,14 +343,14 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             canvas.drawText(mEndMessage, mTextX, y, mTextPaints[BASE_PAINT]);
         }
 
-        private String makeTime(Calendar c) {
+        private String makeTime() {
             // Reset the time string buffer (without making a new one)
             mTimeSb.setLength(0);
 
             // Get current time values
-            Date d = c.getTime();
-            int m = c.get(Calendar.MINUTE);
-            int h = c.get(Calendar.HOUR);
+            Date d = mCalendar.getTime();
+            int m = mCalendar.get(Calendar.MINUTE);
+            int h = mCalendar.get(Calendar.HOUR);
             TimeZone tz = TimeZone.getDefault();
 
             // If the timezone has changed...
@@ -365,8 +365,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
                 mCalendar = Calendar.getInstance();
                 mTimezone = mCalendar.getTimeZone();
                 d = mCalendar.getTime();
-                m = c.get(Calendar.MINUTE);
-                h = c.get(Calendar.HOUR);
+                m = mCalendar.get(Calendar.MINUTE);
+                h = mCalendar.get(Calendar.HOUR);
                 mTimezoneString = mTimezoneFormat.format(d);
             }
 
@@ -387,7 +387,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             // If we're in interactive mode...
             if (!mAmbient) {
                 // Get the seconds, and make it a string
-                String sec = Integer.toString(c.get(Calendar.SECOND));
+                String sec = Integer.toString(mCalendar.get(Calendar.SECOND));
                 // but pad it with a 0 if it's one digit
                 if (sec.length() < 2) {
                     mTimeSb.append("0");
@@ -408,11 +408,11 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             return mTimeSb.toString();
         }
 
-        private String makeDate(Calendar c) {
-            int day = c.get(Calendar.DAY_OF_MONTH);
+        private String makeDate() {
+            int day = mCalendar.get(Calendar.DAY_OF_MONTH);
             if (day != mDay) {
                 mDay = day;
-                mDateString = mDateFormat.format(c.getTime());
+                mDateString = mDateFormat.format(mCalendar.getTime());
             }
 
             return mDateString;
