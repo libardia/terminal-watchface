@@ -353,8 +353,8 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             int h = mCalendar.get(Calendar.HOUR);
             TimeZone tz = TimeZone.getDefault();
 
-            // If the timezone has changed...
-            if (!tz.equals(mTimezone)) {
+            // If the timezone has changed (or it switched in or out of DST)...
+            if (!tz.equals(mTimezone) || mTimezone.inDaylightTime(d) != tz.inDaylightTime(d)) {
                 // Update the format objects (because the locale probably changed)
                 mHourMinuteFormat = new SimpleDateFormat(HM_FORMAT_STRING, Locale.getDefault());
                 mTimezoneFormat = new SimpleDateFormat(TZ_FORMAT_STRING, Locale.getDefault());
