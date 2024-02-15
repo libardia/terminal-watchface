@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 30
     defaultConfig {
         applicationId "info.tonyl.terminal"
         minSdkVersion 25
-        targetSdkVersion 29
-        versionCode 14
-        versionName "2.2.3"
+        targetSdkVersion 30
+        versionCode 15
+        versionName "3.0.0"
     }
     buildTypes {
         release {
@@ -16,6 +15,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'info.tonyl.terminal'
 }
 
 dependencies {
