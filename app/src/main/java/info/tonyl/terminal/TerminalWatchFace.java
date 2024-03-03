@@ -119,8 +119,9 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
         private boolean mRegisteredTimeZoneReceiver = false;
 
         // RELEVANT =======================================
-        private static final float TEXT_SIZE_RATIO = 0.065f;
-        private static final float TEXT_X_RATIO = 0.1f;
+        private static final float TEXT_SIZE_RATIO = 0.0675f;
+        private static final float TEXT_X_RATIO = 0.095f;
+        private static final float TEXT_Y_ADJUST = 0.025f;
 
         private static final int BASE_TEXT_COLOR = Color.WHITE;
         private static final int TIME_COLOR = Color.GREEN;
@@ -293,7 +294,7 @@ public class TerminalWatchFace extends CanvasWatchFaceService {
             mTextX = mCenterX - mTextPaints[BASE_PAINT].measureText(mMessages.get(0)) / 2;
             mTextX = width * TEXT_X_RATIO;
             mExtraTextX = mTextX + mTextPaints[BASE_PAINT].measureText(mMessages.get(1));
-            mTextY = mCenterY - totalTextHeight / 2;
+            mTextY = mCenterY - (totalTextHeight / 2) + (height * TEXT_Y_ADJUST);
 
             // Init complications
             setDefaultSystemComplicationProvider(BATTERY_COMP_ID, SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
